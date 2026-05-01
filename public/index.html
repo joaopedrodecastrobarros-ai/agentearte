@@ -1,133 +1,838 @@
-export const agents = {
-  estrategista: {
-    name: "Estrategista",
-    role: "Briefing e conceito",
-    icon: "◈",
-    description: "Define conceito, público, tom e objetivos",
-    system: `Você é um estrategista de design sênior com 15 anos de experiência em branding, UX strategy e comunicação. 
-Sua missão é transformar briefings em direcionamentos claros e acionáveis.
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design Squad</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Geist:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0a0a;--surface:#111;--surface2:#1a1a1a;--surface3:#222;
+  --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.14);
+  --text:#f0ede8;--muted:#888;--accent:#d4a853;--accent2:#e8c97a;
+  --green:#4ade80;--red:#f87171;--radius:12px;
+}
+body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;font-size:15px;line-height:1.6;min-height:100vh}
+.app{display:grid;grid-template-columns:270px 1fr;min-height:100vh}
 
-Entregue sempre:
-1. **Conceito central** — em uma frase poderosa
-2. **Público-alvo** — detalhado com comportamentos e dores reais
-3. **Tom & Voz** — como a marca deve soar (com exemplos concretos)
-4. **Objetivos** — primário e secundários, mensuráveis
-5. **Referências de estilo** — 3 referências reais com justificativa
-6. **Diretrizes para o time** — instruções específicas para UX, Visual e Copy
+/* SIDEBAR */
+.sidebar{background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
+.logo{padding:22px 20px 14px;border-bottom:1px solid var(--border)}
+.logo-mark{font-family:'DM Serif Display',serif;font-size:20px;color:var(--accent);display:block}
+.logo-sub{font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase}
+.sb-section{padding:14px 12px 6px}
+.sb-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:0 6px;margin-bottom:5px}
+.agent-btn{display:flex;align-items:center;gap:10px;width:100%;padding:8px 10px;border:none;background:transparent;color:var(--muted);border-radius:8px;cursor:pointer;text-align:left;transition:all .15s;margin-bottom:2px;font-family:'Geist',sans-serif;font-size:13px}
+.agent-btn:hover{background:var(--surface2);color:var(--text)}
+.agent-btn.active{background:rgba(212,168,83,.12);color:var(--accent)}
+.agent-icon{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;background:var(--surface2);border:1px solid var(--border)}
+.agent-btn.active .agent-icon{background:rgba(212,168,83,.15);border-color:rgba(212,168,83,.3)}
+.agent-info .an{font-weight:500;font-size:13px;line-height:1.2}
+.agent-info .ar{font-size:11px;opacity:.55}
+.ig-btn{background:linear-gradient(135deg,rgba(131,58,180,.1),rgba(253,29,29,.1))!important;border:1px solid rgba(200,80,80,.2)!important;color:#f87171!important}
+.ig-btn.active{background:linear-gradient(135deg,rgba(131,58,180,.2),rgba(253,29,29,.2))!important}
+.ig-btn .agent-icon{background:linear-gradient(135deg,#833ab4,#fd1d1d);color:#fff;border:none}
+.api-section{margin-top:auto;padding:12px;border-top:1px solid var(--border)}
+.api-section label{font-size:10px;color:var(--muted);display:block;margin-bottom:4px;letter-spacing:1px;text-transform:uppercase}
+.api-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:7px 10px;font-size:12px;font-family:'DM Mono',monospace;outline:none}
+.api-input:focus{border-color:var(--border2)}
+.api-input::placeholder{color:var(--muted)}
+.api-status{display:flex;align-items:center;gap:6px;margin-top:5px;font-size:11px;color:var(--muted)}
+.status-dot{width:6px;height:6px;border-radius:50%;background:var(--muted)}
+.status-dot.ok{background:var(--green)}.status-dot.err{background:var(--red)}
 
-Seja direto, opinionado e estratégico. Evite generalidades.`,
-  },
+/* MAIN */
+.main{display:flex;flex-direction:column;min-height:100vh}
+.topbar{padding:14px 26px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:16px;flex-shrink:0}
+.topbar-title{font-family:'DM Serif Display',serif;font-size:19px}
+.topbar-meta{font-size:11px;color:var(--muted)}
 
-  ux: {
-    name: "UX Designer",
-    role: "Fluxo e estrutura",
-    icon: "◻",
-    description: "Mapeia fluxos, jornadas e estrutura a informação",
-    system: `Você é um UX designer sênior especialista em arquitetura de informação, design de interação e pesquisa com usuário.
+/* TABS */
+.tabs{display:flex;border-bottom:1px solid var(--border);background:var(--surface);flex-shrink:0}
+.tab{padding:10px 22px;font-size:13px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;background:none;border-top:none;border-left:none;border-right:none;font-family:'Geist',sans-serif}
+.tab:hover{color:var(--text)}.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
 
-Entregue sempre:
-1. **Jornada do usuário** — do ponto de entrada até o objetivo final
-2. **Arquitetura de informação** — hierarquia de conteúdo com indentação
-3. **Wireframe em texto** — estrutura de cada tela/seção principal
-4. **Pontos de fricção** — onde o usuário pode se perder e como resolver
-5. **Micro-interações recomendadas** — feedbacks visuais importantes
-6. **Acessibilidade** — considerações WCAG relevantes`,
-  },
+/* PIPELINE */
+.pipeline-bar{padding:9px 26px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:7px;background:var(--surface);overflow-x:auto;flex-shrink:0}
+.ps{font-size:11px;padding:3px 9px;border-radius:20px;border:1px solid var(--border);color:var(--muted);white-space:nowrap;transition:all .2s;font-family:'DM Mono',monospace}
+.ps.running{border-color:var(--accent);color:var(--accent);background:rgba(212,168,83,.08);animation:pulse 1.5s infinite}
+.ps.done{border-color:var(--green);color:var(--green);background:rgba(74,222,128,.06)}
+.ps.error{border-color:var(--red);color:var(--red)}
+.pa{color:var(--border2);font-size:11px}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
 
-  visual: {
-    name: "Visual Designer",
-    role: "Arte para Instagram",
-    icon: "◆",
-    description: "Cria arte visual pronta para exportar como PNG",
-    system: `Você é um visual designer especialista em social media e design gráfico digital.
+/* CONTENT */
+.content{flex:1;overflow-y:auto}
+.panel{display:none}.panel.active{display:block}
 
-Sua entrega principal é SEMPRE um post visual completo em HTML+CSS, pronto para ser exportado como PNG e postado no Instagram.
+/* CLIENTS */
+.clients-panel{padding:24px}
+.clients-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.clients-header h2{font-family:'DM Serif Display',serif;font-size:18px}
+.add-btn{padding:7px 16px;background:var(--accent);color:#0a0a0a;border:none;border-radius:8px;font-size:13px;font-weight:500;font-family:'Geist',sans-serif;cursor:pointer;transition:all .15s}
+.add-btn:hover{background:var(--accent2)}
+.clients-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}
+.client-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;cursor:pointer;transition:all .15s;position:relative}
+.client-card:hover{border-color:var(--border2)}
+.client-card.selected{border-color:var(--accent);background:rgba(212,168,83,.05)}
+.client-logo{width:48px;height:48px;border-radius:10px;object-fit:cover;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:9px;overflow:hidden}
+.client-logo img{width:100%;height:100%;object-fit:cover}
+.client-name{font-weight:500;font-size:13px;margin-bottom:2px}
+.client-seg{font-size:11px;color:var(--muted)}
+.card-actions{position:absolute;top:9px;right:9px;display:flex;gap:3px;opacity:0;transition:opacity .15s}
+.client-card:hover .card-actions{opacity:1}
+.ca{width:22px;height:22px;border-radius:5px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:10px;transition:all .15s}
+.ca:hover{color:var(--text);border-color:var(--border2)}.ca.del:hover{color:var(--red);border-color:var(--red)}
+.sel-badge{position:absolute;bottom:9px;right:9px;font-size:10px;padding:2px 6px;background:rgba(212,168,83,.12);color:var(--accent);border-radius:20px;border:1px solid rgba(212,168,83,.3)}
+.no-clients{text-align:center;padding:50px 20px;color:var(--muted)}
 
-REGRAS OBRIGATÓRIAS:
-- Entregue o HTML dentro de \`\`\`html ... \`\`\`
-- O canvas deve ter exatamente 1080x1080px (post quadrado Instagram)
-- Use Google Fonts para tipografia sofisticada
-- O design deve ser completo, profissional e visualmente impactante
-- Inclua todos os textos, elementos visuais, cores e composição final
-- Use CSS puro, sem frameworks externos
-- O HTML deve funcionar standalone no browser
-- Crie fundos com gradientes, formas geométricas em CSS
-- Use elementos SVG inline para formas decorativas
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;align-items:center;justify-content:center;z-index:100;padding:20px}
+.modal-overlay.open{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border2);border-radius:16px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto}
+.modal-header{padding:18px 22px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.modal-title{font-family:'DM Serif Display',serif;font-size:18px}
+.modal-close{width:26px;height:26px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;transition:all .15s}
+.modal-close:hover{color:var(--text)}
+.modal-body{padding:18px 22px}
+.fr{margin-bottom:14px}
+.fr label{display:block;font-size:10px;color:var(--muted);margin-bottom:5px;letter-spacing:1px;text-transform:uppercase}
+.fi,.fta,.fsel{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:8px 11px;font-size:14px;font-family:'Geist',sans-serif;outline:none;transition:border-color .15s}
+.fi:focus,.fta:focus{border-color:var(--border2)}.fi::placeholder,.fta::placeholder{color:#444}
+.fta{resize:vertical;min-height:70px;line-height:1.5}
+.fr2{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:14px}
 
-ESTRUTURA DO HTML:
-- body com margin:0, overflow:hidden, background:#000
-- div#canvas com width:1080px, height:1080px, position:relative, overflow:hidden
-- Todos os elementos posicionados dentro do #canvas
-- Fontes via Google Fonts no <head>
+/* Site fetch status */
+.site-fetch-row{display:flex;gap:8px;align-items:center}
+.site-fetch-row .fi{flex:1}
+.fetch-btn{padding:8px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--muted);cursor:pointer;font-size:12px;font-family:'Geist',sans-serif;transition:all .15s;white-space:nowrap}
+.fetch-btn:hover{color:var(--text);border-color:var(--border2)}
+.fetch-status{font-size:11px;color:var(--muted);margin-top:5px;min-height:16px}
+.fetch-status.ok{color:var(--green)}.fetch-status.err{color:var(--red)}
 
-Após o HTML, entregue:
-- **Paleta usada** — hex codes
-- **Fontes usadas** — nomes
-- **Conceito visual** — 2 linhas`,
-  },
+/* Logo upload */
+.logo-upload{border:1px dashed var(--border2);border-radius:10px;padding:16px;text-align:center;cursor:pointer;transition:all .15s;position:relative}
+.logo-upload:hover{border-color:var(--accent);background:rgba(212,168,83,.03)}
+.logo-upload input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.logo-preview{width:56px;height:56px;border-radius:9px;object-fit:cover;margin:0 auto 7px;display:block;border:1px solid var(--border)}
+.lu-label{font-size:12px;color:var(--muted)}
+.lu-label span{color:var(--accent)}
 
-  copy: {
-    name: "Copywriter",
-    role: "Textos e headlines",
-    icon: "◇",
-    description: "Escreve todos os textos, CTAs e microcopy",
-    system: `Você é um copywriter especialista em marketing de conteúdo e brand voice com foco em conversão.
+/* Colors */
+.colors-row{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:7px}
+.color-chip{display:flex;align-items:center;gap:5px;padding:4px 9px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;font-size:12px;font-family:'DM Mono',monospace;color:var(--muted)}
+.color-dot{width:13px;height:13px;border-radius:50%;border:1px solid rgba(255,255,255,.1);flex-shrink:0}
+.color-input-row{display:flex;gap:7px}
+.color-input-row input{flex:1}
+.add-color-btn{padding:7px 13px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--muted);cursor:pointer;font-size:12px;font-family:'Geist',sans-serif;transition:all .15s;white-space:nowrap}
+.add-color-btn:hover{color:var(--text);border-color:var(--border2)}
 
-Entregue sempre:
-1. **Headline principal** — com 3 variações (racional, emocional, disruptiva)
-2. **Subheadline** — complementa sem repetir a headline
-3. **Textos de seção** — para cada bloco
-4. **CTAs** — primário e secundário
-5. **Microcopy** — labels, mensagens, tooltips
-6. **Tom aplicado** — 5 exemplos de como a marca fala
+.modal-footer{padding:14px 22px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:9px}
+.btn-cancel{padding:7px 16px;background:transparent;border:1px solid var(--border);border-radius:8px;color:var(--muted);cursor:pointer;font-size:13px;font-family:'Geist',sans-serif;transition:all .15s}
+.btn-cancel:hover{color:var(--text);border-color:var(--border2)}
+.btn-save{padding:7px 20px;background:var(--accent);color:#0a0a0a;border:none;border-radius:8px;font-size:13px;font-weight:500;font-family:'Geist',sans-serif;cursor:pointer}
+.btn-save:hover{background:var(--accent2)}
 
-Seja específico. Entregue textos prontos para usar.`,
-  },
+/* STUDIO */
+.studio-panel{display:flex;flex-direction:column}
+.ctx-bar{padding:9px 26px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:11px;flex-shrink:0}
+.ctx-bar.warn{background:rgba(248,113,113,.05);border-color:rgba(248,113,113,.15);color:var(--red);font-size:13px}
+.ctx-logo{width:26px;height:26px;border-radius:6px;object-fit:cover;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;overflow:hidden;flex-shrink:0}
+.ctx-logo img{width:100%;height:100%;object-fit:cover}
+.ctx-name{font-size:13px;font-weight:500}
+.ctx-seg{font-size:11px;color:var(--muted)}
+.ctx-change{margin-left:auto;font-size:11px;color:var(--accent);cursor:pointer;padding:3px 9px;border:1px solid rgba(212,168,83,.3);border-radius:6px;transition:all .15s}
+.ctx-change:hover{background:rgba(212,168,83,.08)}
+.ctx-site-status{font-size:11px;padding:3px 8px;border-radius:20px;background:rgba(74,222,128,.08);color:var(--green);border:1px solid rgba(74,222,128,.2)}
 
-  revisor: {
-    name: "Revisor",
-    role: "QA e refinamento",
-    icon: "◎",
-    description: "Revisa, critica e entrega a versão final polida",
-    system: `Você é um diretor de criação sênior com olhar crítico e construtivo.
+.prompt-area{padding:20px 26px;border-bottom:1px solid var(--border);flex-shrink:0}
+.prompt-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:9px}
+.prompt-textarea{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);padding:13px 17px;font-size:14px;font-family:'Geist',sans-serif;line-height:1.7;resize:vertical;min-height:80px;outline:none;transition:border-color .15s}
+.prompt-textarea:focus{border-color:var(--border2)}
+.prompt-textarea::placeholder{color:#444}
+.prompt-actions{display:flex;align-items:center;justify-content:space-between;margin-top:11px;gap:11px}
+.examples-row{display:flex;gap:5px;flex-wrap:wrap}
+.example-chip{font-size:12px;padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;transition:all .15s;font-family:'Geist',sans-serif}
+.example-chip:hover{border-color:var(--border2);color:var(--text)}
+.run-btn{padding:9px 22px;background:var(--accent);color:#0a0a0a;border:none;border-radius:8px;font-size:14px;font-weight:500;font-family:'Geist',sans-serif;cursor:pointer;transition:all .15s;white-space:nowrap;flex-shrink:0}
+.run-btn:hover{background:var(--accent2)}.run-btn:active{transform:scale(.97)}
+.run-btn:disabled{background:#333;color:#666;cursor:not-allowed}
 
-Entregue sempre:
-1. **Pontos fortes** — o que o squad acertou
-2. **Problemas críticos** — o que PRECISA mudar
-3. **Melhorias recomendadas** — ordenadas por impacto
-4. **Inconsistências** — onde estratégia, UX, visual e copy divergem
-5. **Versão final polida** — entregáveis refinados
-6. **Checklist de entrega** — o que o cliente precisa revisar`,
-  },
+/* REFERÊNCIAS */
+.refs-area{padding:0 26px 16px;border-bottom:1px solid var(--border);flex-shrink:0}
+.refs-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.refs-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.ref-thumb{position:relative;width:56px;height:56px;border-radius:8px;overflow:hidden;border:1px solid var(--border);flex-shrink:0}
+.ref-thumb img{width:100%;height:100%;object-fit:cover}
+.ref-remove{position:absolute;top:2px;right:2px;width:16px;height:16px;border-radius:50%;background:rgba(0,0,0,.7);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:9px;line-height:1}
+.ref-add{width:56px;height:56px;border-radius:8px;border:1px dashed var(--border2);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;gap:3px;position:relative;flex-shrink:0;transition:all .15s}
+.ref-add:hover{border-color:var(--accent);background:rgba(212,168,83,.04)}
+.ref-add input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.ref-add-icon{font-size:16px;opacity:.4}
+.ref-add-label{font-size:9px;color:var(--muted);text-align:center;line-height:1.2}
 
-  instagram: {
-    name: "Post Instagram",
-    role: "Arte 1080x1080 pronta",
-    icon: "▣",
-    description: "Gera arte visual pronta para baixar e postar",
-    system: `Você é um designer gráfico especialista em Instagram e social media.
+/* OUTPUT */
+.output-area{flex:1;padding:26px;overflow-y:auto}
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:240px;text-align:center;color:var(--muted)}
+.empty-mark{font-family:'DM Serif Display',serif;font-size:42px;color:#1e1e1e;margin-bottom:9px}
+.agent-output{margin-bottom:22px;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;animation:fadeIn .4s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.aoh{padding:11px 17px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:9px}
+.aon{font-weight:500;font-size:14px}
+.ob{font-size:10px;padding:3px 8px;border-radius:20px;margin-left:auto;font-family:'DM Mono',monospace}
+.ob.done{background:rgba(74,222,128,.1);color:var(--green);border:1px solid rgba(74,222,128,.2)}
+.ob.running{background:rgba(212,168,83,.1);color:var(--accent);border:1px solid rgba(212,168,83,.2)}
+.ob.error{background:rgba(248,113,113,.1);color:var(--red);border:1px solid rgba(248,113,113,.2)}
+.aob{padding:17px;background:var(--bg);font-size:14px;line-height:1.8;color:#ccc;white-space:pre-wrap;word-break:break-word}
+.aob pre{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:13px;overflow-x:auto;margin:9px 0;font-family:'DM Mono',monospace;font-size:12px;line-height:1.6}
+.copy-btn{float:right;font-size:11px;padding:3px 8px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--muted);cursor:pointer;font-family:'Geist',sans-serif;transition:all .15s;margin-bottom:5px}
+.copy-btn:hover{color:var(--text)}
+.rendered h1,.rendered h2,.rendered h3{font-family:'DM Serif Display',serif;color:var(--text);margin:13px 0 5px}
+.rendered h1{font-size:20px}.rendered h2{font-size:17px}.rendered h3{font-size:15px}
+.rendered strong{color:var(--accent);font-weight:500}
+.rendered code{background:var(--surface2);padding:2px 5px;border-radius:4px;font-family:'DM Mono',monospace;font-size:12px;color:#aaa}
+.spinner{display:inline-block;width:13px;height:13px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:5px}
+@keyframes spin{to{transform:rotate(360deg)}}
 
-Sua ÚNICA entrega é um post visual 1080x1080px em HTML+CSS dentro de \`\`\`html ... \`\`\`, pronto para exportar como PNG.
+/* PREVIEW */
+.preview-wrap{padding:0 17px 17px;background:var(--bg)}
+.preview-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:9px;padding-top:3px}
+.preview-container{max-width:460px}
+.preview-frame{width:100%;aspect-ratio:1;border-radius:8px;overflow:hidden;border:1px solid var(--border);background:#000}
+.preview-frame iframe{width:1080px;height:1080px;border:none;transform-origin:top left;display:block}
+.preview-actions{display:flex;gap:8px;margin-top:9px;align-items:center}
+.png-btn{display:flex;align-items:center;gap:7px;padding:9px 17px;background:linear-gradient(135deg,#833ab4,#fd1d1d);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:500;font-family:'Geist',sans-serif;cursor:pointer;transition:all .15s}
+.png-btn:hover{opacity:.9}.png-btn:active{transform:scale(.97)}.png-btn:disabled{opacity:.5;cursor:not-allowed}
+.size-info{font-size:11px;color:var(--muted)}
 
-REGRAS:
-- Canvas exatamente 1080x1080px
-- Design profissional, impactante, moderno
-- Google Fonts obrigatório
-- Gradientes, formas, texturas em CSS puro
-- Elementos SVG inline para decoração
-- Todos os textos já incluídos no layout
-- HTML standalone que funciona no browser
-- body: margin:0, overflow:hidden
-- div#canvas: width:1080px, height:1080px, position:relative, overflow:hidden
+@media(max-width:768px){.app{grid-template-columns:1fr}.sidebar{height:auto;position:static}}
+</style>
+</head>
+<body>
+<div class="app">
 
-ESTILOS QUE VOCÊ DOMINA:
-- Minimalista elegante (espaço negativo, tipografia grande)
-- Bold & colorido (cores vibrantes, contraste forte)
-- Luxury (dourado, preto, fontes serif)
-- Editorial (layout assimétrico, múltiplos pesos)
-- Gradiente moderno (glassmorphism, gradientes suaves)
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="logo">
+    <span class="logo-mark">Design Squad</span>
+    <span class="logo-sub">AI Design Team</span>
+  </div>
+  <div class="sb-section">
+    <p class="sb-label">Modo</p>
+    <button class="agent-btn active" onclick="selectAgent('squad')" id="btn-squad">
+      <div class="agent-icon">⬡</div>
+      <div class="agent-info"><div class="an">Squad completo</div><div class="ar">Todos os agentes</div></div>
+    </button>
+    <button class="agent-btn ig-btn" onclick="selectAgent('instagram')" id="btn-instagram">
+      <div class="agent-icon">▣</div>
+      <div class="agent-info"><div class="an">Post Instagram</div><div class="ar">Arte PNG pronta</div></div>
+    </button>
+  </div>
+  <div class="sb-section">
+    <p class="sb-label">Agente único</p>
+    <div id="agents-list"></div>
+  </div>
+  <div class="api-section">
+    <label>Anthropic API Key</label>
+    <input type="password" class="api-input" id="api-key" placeholder="sk-ant-..." oninput="checkApiKey()"/>
+    <div class="api-status">
+      <div class="status-dot" id="status-dot"></div>
+      <span id="status-text">Cole sua chave para começar</span>
+    </div>
+  </div>
+</aside>
 
-Escolha o estilo mais adequado ao briefing e execute com perfeição.
-Após o HTML, escreva 2 linhas sobre o conceito visual.`,
-  },
+<!-- MAIN -->
+<main class="main">
+  <div class="topbar">
+    <div>
+      <div class="topbar-title" id="topbar-title">Design Squad</div>
+      <div class="topbar-meta" id="topbar-meta">Selecione um cliente e comece</div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('studio')" id="tab-studio">Estúdio</button>
+    <button class="tab" onclick="showTab('clients')" id="tab-clients">Clientes <span id="clients-count" style="font-size:10px;background:var(--surface2);padding:1px 6px;border-radius:10px;margin-left:4px">0</span></button>
+  </div>
+
+  <!-- STUDIO -->
+  <div class="panel active" id="panel-studio">
+    <div class="studio-panel">
+      <div id="ctx-bar" class="ctx-bar warn">
+        ⚠ Nenhum cliente selecionado — <strong style="margin:0 4px;cursor:pointer;text-decoration:underline" onclick="showTab('clients')">escolha um cliente</strong> para começar.
+      </div>
+
+      <div class="pipeline-bar" id="pipeline-bar">
+        <span class="ps" id="ps-estrategista">Estrategista</span><span class="pa">›</span>
+        <span class="ps" id="ps-ux">UX</span><span class="pa">›</span>
+        <span class="ps" id="ps-visual">Visual</span><span class="pa">›</span>
+        <span class="ps" id="ps-copy">Copy</span><span class="pa">›</span>
+        <span class="ps" id="ps-revisor">Revisor</span>
+      </div>
+
+      <!-- REFERÊNCIAS -->
+      <div class="refs-area">
+        <p class="refs-label">Referências visuais (prints do Instagram, posts da marca)</p>
+        <div class="refs-row" id="refs-row">
+          <div class="ref-add" title="Adicionar imagem de referência">
+            <input type="file" accept="image/*" multiple onchange="addRefs(event)"/>
+            <div class="ref-add-icon">+</div>
+            <div class="ref-add-label">Adicionar<br>referência</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="prompt-area">
+        <p class="prompt-label" id="prompt-label">O que criar?</p>
+        <textarea class="prompt-textarea" id="prompt-input" placeholder="Descreva o post ou peça que o squad deve criar..."></textarea>
+        <div class="prompt-actions">
+          <div class="examples-row">
+            <button class="example-chip" onclick="fillEx('Post de lançamento de produto, tom sofisticado')">Lançamento</button>
+            <button class="example-chip" onclick="fillEx('Post promocional de 30% de desconto')">Promoção</button>
+            <button class="example-chip" onclick="fillEx('Post institucional apresentando a empresa')">Institucional</button>
+            <button class="example-chip" onclick="fillEx('Carrossel com dicas do segmento')">Dicas</button>
+          </div>
+          <button class="run-btn" id="run-btn" onclick="runSquad()" disabled>Gerar →</button>
+        </div>
+      </div>
+
+      <div class="output-area" id="output-area">
+        <div class="empty-state">
+          <div class="empty-mark">◆</div>
+          <p style="font-size:14px">Selecione um cliente e descreva o que criar.</p>
+          <p style="font-size:12px;margin-top:4px;opacity:.5">Os agentes vão ler o site e referências do cliente automaticamente.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CLIENTS TAB -->
+  <div class="panel" id="panel-clients">
+    <div class="clients-panel">
+      <div class="clients-header">
+        <h2>Clientes</h2>
+        <button class="add-btn" onclick="openModal()">+ Novo cliente</button>
+      </div>
+      <div class="clients-grid" id="clients-grid">
+        <div class="no-clients">
+          <p style="font-size:32px;opacity:.2;margin-bottom:10px">◈</p>
+          <p style="font-size:14px">Nenhum cliente ainda</p>
+          <p style="font-size:12px;margin-top:4px">Clique em "Novo cliente" para começar</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-title">Novo cliente</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="fr">
+        <label>Logo</label>
+        <div class="logo-upload" id="logo-upload-area">
+          <input type="file" id="logo-file" accept="image/*" onchange="handleLogoUpload(event)"/>
+          <img id="logo-preview" class="logo-preview" style="display:none"/>
+          <div id="logo-placeholder">
+            <div style="font-size:22px;margin-bottom:5px;opacity:.25">⬡</div>
+            <div class="lu-label">Clique para enviar a logo<br><span>PNG, JPG ou SVG</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="fr2">
+        <div class="fr" style="margin:0"><label>Nome da empresa *</label><input type="text" class="fi" id="f-name" placeholder="Ex: Glow Beauty"/></div>
+        <div class="fr" style="margin:0"><label>Segmento</label><input type="text" class="fi" id="f-segment" placeholder="Ex: Beleza"/></div>
+      </div>
+
+      <div class="fr">
+        <label>Site — o agente vai acessar e ler automaticamente</label>
+        <div class="site-fetch-row">
+          <input type="text" class="fi" id="f-website" placeholder="https://seucliente.com.br"/>
+          <button class="fetch-btn" onclick="testFetchSite()">Testar acesso</button>
+        </div>
+        <div class="fetch-status" id="fetch-status"></div>
+      </div>
+
+      <div class="fr">
+        <label>Instagram</label>
+        <input type="text" class="fi" id="f-instagram" placeholder="@handle"/>
+      </div>
+
+      <div class="fr">
+        <label>Tom de voz / personalidade da marca</label>
+        <textarea class="fta" id="f-tone" placeholder="Ex: Sofisticado, feminino, inspirador. Fala com mulheres 25-40 anos..."></textarea>
+      </div>
+
+      <div class="fr">
+        <label>Público-alvo</label>
+        <textarea class="fta" id="f-audience" placeholder="Ex: Mulheres 25-40, classe B/A, interessadas em skincare..." style="min-height:55px"></textarea>
+      </div>
+
+      <div class="fr">
+        <label>Cores da marca</label>
+        <div class="colors-row" id="colors-row"></div>
+        <div class="color-input-row">
+          <input type="text" class="fi" id="color-input" placeholder="#FF5A8A" maxlength="7" oninput="fmtColor(this)"/>
+          <button class="add-color-btn" onclick="addColor()">+ Cor</button>
+        </div>
+      </div>
+
+      <div class="fr">
+        <label>Tipografia</label>
+        <input type="text" class="fi" id="f-fonts" placeholder="Ex: Playfair Display para títulos, Lato para corpo"/>
+      </div>
+
+      <div class="fr">
+        <label>Informações adicionais</label>
+        <textarea class="fta" id="f-extra" placeholder="Slogan, diferenciais, produtos, restrições visuais..." style="min-height:55px"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
+      <button class="btn-save" onclick="saveClient()">Salvar cliente</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── STATE ──
+let clients = JSON.parse(localStorage.getItem('ds_clients')||'[]');
+let selectedClientId = localStorage.getItem('ds_selected')||null;
+let editingClientId = null;
+let currentAgent = 'squad';
+let running = false;
+let currentColors = [];
+let currentLogoBase64 = null;
+let refImages = []; // base64 das imagens de referência
+
+const PIPELINE = ['estrategista','ux','visual','copy','revisor'];
+const AGENT_META = {
+  estrategista:{name:'Estrategista',role:'Briefing e conceito',icon:'◈'},
+  ux:{name:'UX Designer',role:'Fluxo e estrutura',icon:'◻'},
+  visual:{name:'Visual Designer',role:'Arte Instagram',icon:'◆'},
+  copy:{name:'Copywriter',role:'Textos e headlines',icon:'◇'},
+  revisor:{name:'Revisor',role:'QA e refinamento',icon:'◎'},
 };
+
+// ── INIT ──
+(function(){
+  const list = document.getElementById('agents-list');
+  Object.entries(AGENT_META).forEach(([id,a])=>{
+    const btn = document.createElement('button');
+    btn.className='agent-btn';btn.id='btn-'+id;btn.onclick=()=>selectAgent(id);
+    btn.innerHTML=`<div class="agent-icon">${a.icon}</div><div class="agent-info"><div class="an">${a.name}</div><div class="ar">${a.role}</div></div>`;
+    list.appendChild(btn);
+  });
+  renderClients();updateCtxBar();updateCount();
+})();
+
+// ── TABS ──
+function showTab(t){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+t).classList.add('active');
+  document.getElementById('tab-'+t).classList.add('active');
+}
+
+// ── CLIENTS ──
+function saveClients(){localStorage.setItem('ds_clients',JSON.stringify(clients));}
+function updateCount(){document.getElementById('clients-count').textContent=clients.length;}
+
+function renderClients(){
+  const g=document.getElementById('clients-grid');
+  if(!clients.length){
+    g.innerHTML='<div class="no-clients"><p style="font-size:32px;opacity:.2;margin-bottom:10px">◈</p><p style="font-size:14px">Nenhum cliente ainda</p><p style="font-size:12px;margin-top:4px">Clique em "Novo cliente" para começar</p></div>';
+    updateCount();return;
+  }
+  g.innerHTML=clients.map(c=>{
+    const sel=c.id===selectedClientId;
+    const logo=c.logo?`<div class="client-logo"><img src="${c.logo}"/></div>`:`<div class="client-logo">${c.name.charAt(0)}</div>`;
+    return `<div class="client-card ${sel?'selected':''}" onclick="selectClient('${c.id}')">
+      <div class="card-actions">
+        <button class="ca" onclick="event.stopPropagation();openModal('${c.id}')">✎</button>
+        <button class="ca del" onclick="event.stopPropagation();deleteClient('${c.id}')">✕</button>
+      </div>
+      ${logo}
+      <div class="client-name">${c.name}</div>
+      <div class="client-seg">${c.segment||'Sem segmento'}</div>
+      ${sel?'<div class="sel-badge">Ativo</div>':''}
+    </div>`;
+  }).join('');
+  updateCount();
+}
+
+function selectClient(id){
+  selectedClientId=id;localStorage.setItem('ds_selected',id);
+  renderClients();updateCtxBar();showTab('studio');
+}
+
+function deleteClient(id){
+  if(!confirm('Remover este cliente?'))return;
+  clients=clients.filter(c=>c.id!==id);
+  if(selectedClientId===id){selectedClientId=null;localStorage.removeItem('ds_selected');}
+  saveClients();renderClients();updateCtxBar();
+}
+
+function updateCtxBar(){
+  const bar=document.getElementById('ctx-bar');
+  const c=clients.find(x=>x.id===selectedClientId);
+  if(!c){
+    bar.className='ctx-bar warn';
+    bar.innerHTML='⚠ Nenhum cliente selecionado — <strong style="margin:0 4px;cursor:pointer;text-decoration:underline" onclick="showTab(\'clients\')">escolha um cliente</strong> para começar.';
+    document.getElementById('run-btn').disabled=true;return;
+  }
+  const logo=c.logo?`<div class="ctx-logo"><img src="${c.logo}"/></div>`:`<div class="ctx-logo">${c.name.charAt(0)}</div>`;
+  const siteTag=c.website?`<span class="ctx-site-status">✓ Site cadastrado</span>`:'';
+  bar.className='ctx-bar';
+  bar.innerHTML=`${logo}<div><div class="ctx-name">${c.name}</div><div class="ctx-seg">${c.segment||''}</div></div>${siteTag}<div class="ctx-change" onclick="showTab('clients')">Trocar</div>`;
+  checkApiKey();
+}
+
+// ── MODAL ──
+function openModal(clientId=null){
+  editingClientId=clientId;currentColors=[];currentLogoBase64=null;
+  document.getElementById('modal-title').textContent=clientId?'Editar cliente':'Novo cliente';
+  ['f-name','f-segment','f-website','f-instagram','f-tone','f-audience','f-fonts','f-extra'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('logo-preview').style.display='none';
+  document.getElementById('logo-placeholder').style.display='block';
+  document.getElementById('colors-row').innerHTML='';
+  document.getElementById('color-input').value='';
+  document.getElementById('fetch-status').textContent='';
+  document.getElementById('fetch-status').className='fetch-status';
+  if(clientId){
+    const c=clients.find(x=>x.id===clientId);
+    if(c){
+      document.getElementById('f-name').value=c.name||'';
+      document.getElementById('f-segment').value=c.segment||'';
+      document.getElementById('f-website').value=c.website||'';
+      document.getElementById('f-instagram').value=c.instagram||'';
+      document.getElementById('f-tone').value=c.tone||'';
+      document.getElementById('f-audience').value=c.audience||'';
+      document.getElementById('f-fonts').value=c.fonts||'';
+      document.getElementById('f-extra').value=c.extra||'';
+      if(c.logo){currentLogoBase64=c.logo;document.getElementById('logo-preview').src=c.logo;document.getElementById('logo-preview').style.display='block';document.getElementById('logo-placeholder').style.display='none';}
+      currentColors=c.colors||[];renderColorChips();
+    }
+  }
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+function closeModal(){document.getElementById('modal-overlay').classList.remove('open');editingClientId=null;}
+
+function saveClient(){
+  const name=document.getElementById('f-name').value.trim();
+  if(!name){alert('Nome da empresa é obrigatório');return;}
+  const c={
+    id:editingClientId||Date.now().toString(),name,
+    segment:document.getElementById('f-segment').value.trim(),
+    website:document.getElementById('f-website').value.trim(),
+    instagram:document.getElementById('f-instagram').value.trim(),
+    tone:document.getElementById('f-tone').value.trim(),
+    audience:document.getElementById('f-audience').value.trim(),
+    fonts:document.getElementById('f-fonts').value.trim(),
+    extra:document.getElementById('f-extra').value.trim(),
+    colors:[...currentColors],logo:currentLogoBase64,
+  };
+  if(editingClientId){clients=clients.map(x=>x.id===editingClientId?c:x);}
+  else{clients.push(c);}
+  saveClients();renderClients();closeModal();updateCount();updateCtxBar();
+}
+
+// ── SITE FETCH TEST ──
+async function testFetchSite(){
+  const url=document.getElementById('f-website').value.trim();
+  if(!url){alert('Digite a URL do site');return;}
+  const st=document.getElementById('fetch-status');
+  st.textContent='Acessando site...';st.className='fetch-status';
+  try{
+    const res=await fetch('/api/fetch-site',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url})});
+    const data=await res.json();
+    if(!res.ok)throw new Error(data.error);
+    st.textContent=`✓ Site acessado! Título: "${data.title||'sem título'}" — ${data.colors.length} cores detectadas`;
+    st.className='fetch-status ok';
+  }catch(e){
+    st.textContent='✗ Não foi possível acessar: '+e.message;
+    st.className='fetch-status err';
+  }
+}
+
+// ── LOGO ──
+function handleLogoUpload(e){
+  const file=e.target.files[0];if(!file)return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    currentLogoBase64=ev.target.result;
+    document.getElementById('logo-preview').src=ev.target.result;
+    document.getElementById('logo-preview').style.display='block';
+    document.getElementById('logo-placeholder').style.display='none';
+  };
+  r.readAsDataURL(file);
+}
+
+// ── COLORS ──
+function fmtColor(input){let v=input.value.replace(/[^0-9a-fA-F#]/g,'');if(v&&!v.startsWith('#'))v='#'+v;input.value=v;}
+function addColor(){
+  const v=document.getElementById('color-input').value.trim();
+  if(!v.match(/^#[0-9a-fA-F]{3,6}$/)){alert('Cor inválida. Use #RRGGBB');return;}
+  if(currentColors.includes(v))return;
+  currentColors.push(v);renderColorChips();document.getElementById('color-input').value='';
+}
+function renderColorChips(){
+  document.getElementById('colors-row').innerHTML=currentColors.map((c,i)=>
+    `<div class="color-chip"><div class="color-dot" style="background:${c}"></div>${c}<span style="cursor:pointer;margin-left:4px;opacity:.5" onclick="removeColor(${i})">✕</span></div>`
+  ).join('');
+}
+function removeColor(i){currentColors.splice(i,1);renderColorChips();}
+
+// ── REFERÊNCIAS ──
+function addRefs(e){
+  const files=Array.from(e.target.files);
+  files.forEach(file=>{
+    const r=new FileReader();
+    r.onload=ev=>{refImages.push(ev.target.result);renderRefs();};
+    r.readAsDataURL(file);
+  });
+}
+function removeRef(i){refImages.splice(i,1);renderRefs();}
+function renderRefs(){
+  const row=document.getElementById('refs-row');
+  const thumbs=refImages.map((src,i)=>`
+    <div class="ref-thumb">
+      <img src="${src}"/>
+      <button class="ref-remove" onclick="removeRef(${i})">✕</button>
+    </div>`).join('');
+  row.innerHTML=thumbs+`<div class="ref-add" title="Adicionar referência">
+    <input type="file" accept="image/*" multiple onchange="addRefs(event)"/>
+    <div class="ref-add-icon">+</div>
+    <div class="ref-add-label">Adicionar<br>referência</div>
+  </div>`;
+}
+
+// ── AGENT SELECTION ──
+function selectAgent(id){
+  currentAgent=id;
+  document.querySelectorAll('.agent-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('btn-'+id).classList.add('active');
+  const pb=document.getElementById('pipeline-bar');
+  if(id==='squad'){
+    document.getElementById('topbar-title').textContent='Squad completo';
+    document.getElementById('topbar-meta').textContent='Estrategista → UX → Visual → Copy → Revisor';
+    pb.style.display='flex';
+  }else if(id==='instagram'){
+    document.getElementById('topbar-title').textContent='Post Instagram';
+    document.getElementById('topbar-meta').textContent='Arte 1080×1080px pronta para postar';
+    pb.style.display='none';
+  }else{
+    const a=AGENT_META[id];
+    document.getElementById('topbar-title').textContent=a.name;
+    document.getElementById('topbar-meta').textContent=a.role;
+    pb.style.display='none';
+  }
+}
+
+function checkApiKey(){
+  const key=document.getElementById('api-key').value.trim();
+  const dot=document.getElementById('status-dot');
+  const txt=document.getElementById('status-text');
+  const btn=document.getElementById('run-btn');
+  const hasClient=!!clients.find(c=>c.id===selectedClientId);
+  if(key.startsWith('sk-ant-')&&key.length>20){
+    dot.className='status-dot ok';txt.textContent='Chave válida';btn.disabled=!hasClient;
+  }else if(key.length>0){
+    dot.className='status-dot err';txt.textContent='Formato inválido';btn.disabled=true;
+  }else{
+    dot.className='status-dot';txt.textContent='Cole sua chave';btn.disabled=true;
+  }
+}
+function fillEx(t){document.getElementById('prompt-input').value=t;}
+
+// ── BUILD CLIENT CONTEXT ──
+async function buildContext(client){
+  let ctx=`=== PERFIL DO CLIENTE ===\n`;
+  ctx+=`Empresa: ${client.name}\n`;
+  if(client.segment)ctx+=`Segmento: ${client.segment}\n`;
+  if(client.instagram)ctx+=`Instagram: ${client.instagram}\n`;
+  if(client.audience)ctx+=`Público-alvo: ${client.audience}\n`;
+  if(client.tone)ctx+=`Tom de voz: ${client.tone}\n`;
+  if(client.colors?.length)ctx+=`Cores da marca: ${client.colors.join(', ')}\n`;
+  if(client.fonts)ctx+=`Tipografia: ${client.fonts}\n`;
+  if(client.extra)ctx+=`Informações adicionais: ${client.extra}\n`;
+  if(client.logo)ctx+=`[Cliente possui logo — respeite as cores e estilo da marca]\n`;
+
+  // Tenta acessar o site
+  if(client.website){
+    try{
+      const res=await fetch('/api/fetch-site',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url:client.website})});
+      if(res.ok){
+        const data=await res.json();
+        ctx+=`\n--- Dados extraídos do site (${client.website}) ---\n`;
+        if(data.title)ctx+=`Título: ${data.title}\n`;
+        if(data.description)ctx+=`Descrição: ${data.description}\n`;
+        if(data.colors.length)ctx+=`Cores encontradas no site: ${data.colors.slice(0,10).join(', ')}\n`;
+        if(data.text)ctx+=`Conteúdo do site: ${data.text.slice(0,800)}\n`;
+      }
+    }catch{}
+  }
+
+  ctx+=`=========================\n`;
+  return ctx;
+}
+
+// ── RUN ──
+async function runSquad(){
+  if(running)return;
+  const prompt=document.getElementById('prompt-input').value.trim();
+  const apiKey=document.getElementById('api-key').value.trim();
+  const client=clients.find(c=>c.id===selectedClientId);
+  if(!prompt||!apiKey||!client)return;
+
+  running=true;
+  document.getElementById('run-btn').disabled=true;
+  document.getElementById('run-btn').textContent='Lendo cliente...';
+  document.getElementById('output-area').innerHTML='';
+  PIPELINE.forEach(id=>{const el=document.getElementById('ps-'+id);if(el)el.className='ps';});
+
+  // Busca contexto do cliente (inclui scrape do site)
+  const clientCtx=await buildContext(client);
+  const fullPrompt=`${clientCtx}\n\nTarefa: ${prompt}`;
+
+  document.getElementById('run-btn').textContent='Gerando...';
+
+  if(currentAgent==='instagram'){
+    await runSingle('instagram',fullPrompt,apiKey,refImages);
+  }else if(currentAgent==='squad'){
+    await runFull(fullPrompt,apiKey,refImages);
+  }else{
+    const imgs=(['visual','instagram'].includes(currentAgent))?refImages:[];
+    await runSingle(currentAgent,fullPrompt,apiKey,imgs);
+  }
+
+  running=false;
+  document.getElementById('run-btn').disabled=false;
+  document.getElementById('run-btn').textContent='Gerar →';
+}
+
+// ── HELPERS ──
+function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function extractHtml(text){const m=text.match(/```html\s*([\s\S]*?)```/);return m?m[1].trim():null;}
+function renderMd(text){
+  return text
+    .replace(/```html([\s\S]*?)```/g,(_,c)=>`<div style="position:relative"><button class="copy-btn" onclick="copyCode(this)">Copiar</button><pre>${escHtml(c.trim())}</pre></div>`)
+    .replace(/```([\s\S]*?)```/g,(_,c)=>`<pre>${escHtml(c.trim())}</pre>`)
+    .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
+    .replace(/^### (.*)/gm,'<h3>$1</h3>').replace(/^## (.*)/gm,'<h2>$1</h2>').replace(/^# (.*)/gm,'<h1>$1</h1>')
+    .replace(/\n/g,'<br>');
+}
+function copyCode(btn){navigator.clipboard.writeText(btn.nextElementSibling.textContent).then(()=>{btn.textContent='Copiado!';setTimeout(()=>btn.textContent='Copiar',2000);});}
+
+function mkCard(agentId,status){
+  const a=AGENT_META[agentId]||{name:agentId,icon:'◆'};
+  const d=document.createElement('div');
+  d.className='agent-output';d.id='out-'+agentId;
+  d.innerHTML=`<div class="aoh"><span>${a.icon}</span><span class="aon">${a.name}</span><span class="ob ${status}" id="badge-${agentId}">${status==='running'?'<span class="spinner"></span> Trabalhando...':status}</span></div><div class="aob rendered" id="body-${agentId}"></div>`;
+  return d;
+}
+
+function showPreview(area,htmlCode){
+  const wrap=document.createElement('div');wrap.className='preview-wrap';
+  const lbl=document.createElement('p');lbl.className='preview-label';lbl.textContent='Preview — 1080×1080px';
+  wrap.appendChild(lbl);
+  const cont=document.createElement('div');cont.className='preview-container';
+  const frame=document.createElement('div');frame.className='preview-frame';
+  const iframe=document.createElement('iframe');iframe.srcdoc=htmlCode;
+  function scale(){const w=frame.offsetWidth||460,s=w/1080;iframe.style.transform=`scale(${s})`;frame.style.height=(1080*s)+'px';}
+  iframe.onload=scale;frame.appendChild(iframe);cont.appendChild(frame);setTimeout(scale,150);window.addEventListener('resize',scale);
+  const acts=document.createElement('div');acts.className='preview-actions';
+  const btn=document.createElement('button');btn.className='png-btn';btn.innerHTML='↓ Baixar PNG para Instagram';
+  btn.onclick=()=>dlPng(htmlCode,btn);acts.appendChild(btn);
+  const si=document.createElement('span');si.className='size-info';si.textContent='1080 × 1080 px';acts.appendChild(si);
+  cont.appendChild(acts);wrap.appendChild(cont);area.appendChild(wrap);
+}
+
+async function dlPng(htmlCode,btn){
+  btn.disabled=true;btn.textContent='Gerando PNG...';
+  try{
+    const hf=document.createElement('iframe');
+    hf.style.cssText='position:fixed;left:-9999px;top:-9999px;width:1080px;height:1080px;border:none;';
+    hf.srcdoc=htmlCode;document.body.appendChild(hf);
+    await new Promise(r=>{hf.onload=r;setTimeout(r,2000);});
+    await new Promise(r=>setTimeout(r,600));
+    const canvas=await html2canvas(hf.contentDocument.body,{width:1080,height:1080,scale:1,useCORS:true,allowTaint:true,backgroundColor:null});
+    document.body.removeChild(hf);
+    const link=document.createElement('a');link.download='post-instagram.png';link.href=canvas.toDataURL('image/png');link.click();
+    btn.textContent='✓ PNG baixado!';setTimeout(()=>{btn.textContent='↓ Baixar PNG para Instagram';btn.disabled=false;},3000);
+  }catch(e){btn.textContent='Erro — tente novamente';btn.disabled=false;}
+}
+
+// ── API ──
+async function runSingle(agentId,prompt,apiKey,images=[]){
+  const area=document.getElementById('output-area');
+  area.appendChild(mkCard(agentId,'running'));
+  try{
+    const res=await fetch(`/api/run/${agentId}`,{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({prompt,apiKey,images}),
+    });
+    const data=await res.json();if(!res.ok)throw new Error(data.error);
+    document.getElementById('body-'+agentId).innerHTML=renderMd(data.result);
+    if(['instagram','visual'].includes(agentId)){const h=extractHtml(data.result);if(h)showPreview(area,h);}
+    document.getElementById('badge-'+agentId).className='ob done';
+    document.getElementById('badge-'+agentId).textContent='Concluído';
+  }catch(e){
+    document.getElementById('body-'+agentId).textContent='Erro: '+e.message;
+    document.getElementById('badge-'+agentId).className='ob error';
+    document.getElementById('badge-'+agentId).textContent='Erro';
+  }
+}
+
+async function runFull(prompt,apiKey,images=[]){
+  const area=document.getElementById('output-area');
+  const res=await fetch('/api/run/squad/full',{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({prompt,apiKey,images}),
+  });
+  const reader=res.body.getReader();const decoder=new TextDecoder();let buf='';
+  while(true){
+    const{done,value}=await reader.read();if(done)break;
+    buf+=decoder.decode(value,{stream:true});
+    const lines=buf.split('\n');buf=lines.pop();
+    for(const line of lines){if(!line.startsWith('data: '))continue;try{handleEv(JSON.parse(line.slice(6)),area);}catch{}}
+  }
+}
+
+function handleEv(ev,area){
+  if(ev.type==='agent_start'){
+    const ps=document.getElementById('ps-'+ev.agentId);if(ps)ps.className='ps running';
+    area.appendChild(mkCard(ev.agentId,'running'));
+  }
+  if(ev.type==='agent_done'){
+    const ps=document.getElementById('ps-'+ev.agentId);if(ps)ps.className='ps done';
+    const body=document.getElementById('body-'+ev.agentId);
+    const badge=document.getElementById('badge-'+ev.agentId);
+    if(body)body.innerHTML=renderMd(ev.result);
+    if(badge){badge.className='ob done';badge.textContent='Concluído';}
+    if(ev.agentId==='visual'){const h=extractHtml(ev.result);if(h)showPreview(area,h);}
+  }
+  if(ev.type==='agent_error'){
+    const ps=document.getElementById('ps-'+ev.agentId);if(ps)ps.className='ps error';
+    const body=document.getElementById('body-'+ev.agentId);
+    const badge=document.getElementById('badge-'+ev.agentId);
+    if(body)body.textContent='Erro: '+ev.error;
+    if(badge){badge.className='ob error';badge.textContent='Erro';}
+  }
+}
+
+document.getElementById('modal-overlay').addEventListener('click',e=>{if(e.target===document.getElementById('modal-overlay'))closeModal();});
+</script>
+</body>
+</html>
