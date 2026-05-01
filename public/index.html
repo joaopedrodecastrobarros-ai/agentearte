@@ -1,878 +1,133 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Design Squad</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Geist:wght@300;400;500&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-:root {
-  --bg: #0a0a0a; --surface: #111; --surface2: #1a1a1a; --surface3: #222;
-  --border: rgba(255,255,255,0.08); --border2: rgba(255,255,255,0.14);
-  --text: #f0ede8; --muted: #888; --accent: #d4a853; --accent2: #e8c97a;
-  --green: #4ade80; --red: #f87171; --radius: 12px;
-}
-body { background: var(--bg); color: var(--text); font-family: 'Geist', sans-serif; font-size: 15px; line-height: 1.6; min-height: 100vh; }
+export const agents = {
+  estrategista: {
+    name: "Estrategista",
+    role: "Briefing e conceito",
+    icon: "◈",
+    description: "Define conceito, público, tom e objetivos",
+    system: `Você é um estrategista de design sênior com 15 anos de experiência em branding, UX strategy e comunicação. 
+Sua missão é transformar briefings em direcionamentos claros e acionáveis.
 
-/* ── LAYOUT ── */
-.app { display: grid; grid-template-columns: 280px 1fr; min-height: 100vh; }
+Entregue sempre:
+1. **Conceito central** — em uma frase poderosa
+2. **Público-alvo** — detalhado com comportamentos e dores reais
+3. **Tom & Voz** — como a marca deve soar (com exemplos concretos)
+4. **Objetivos** — primário e secundários, mensuráveis
+5. **Referências de estilo** — 3 referências reais com justificativa
+6. **Diretrizes para o time** — instruções específicas para UX, Visual e Copy
 
-/* ── SIDEBAR ── */
-.sidebar { background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
-.logo { padding: 24px 20px 16px; border-bottom: 1px solid var(--border); }
-.logo-mark { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--accent); display: block; }
-.logo-sub { font-size: 10px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; }
-.sidebar-section { padding: 16px 14px 8px; }
-.sidebar-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); padding: 0 6px; margin-bottom: 6px; }
-.agent-btn { display: flex; align-items: center; gap: 10px; width: 100%; padding: 9px 10px; border: none; background: transparent; color: var(--muted); border-radius: 8px; cursor: pointer; text-align: left; transition: all 0.15s; margin-bottom: 2px; font-family: 'Geist', sans-serif; font-size: 13px; }
-.agent-btn:hover { background: var(--surface2); color: var(--text); }
-.agent-btn.active { background: rgba(212,168,83,0.12); color: var(--accent); }
-.agent-icon { width: 28px; height: 28px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; background: var(--surface2); border: 1px solid var(--border); }
-.agent-btn.active .agent-icon { background: rgba(212,168,83,0.15); border-color: rgba(212,168,83,0.3); }
-.agent-info .agent-name { font-weight: 500; font-size: 13px; line-height: 1.2; }
-.agent-info .agent-role { font-size: 11px; opacity: 0.55; }
-.ig-btn { background: linear-gradient(135deg,rgba(131,58,180,.12),rgba(253,29,29,.12)) !important; border: 1px solid rgba(200,80,80,.2) !important; color: #f87171 !important; }
-.ig-btn.active { background: linear-gradient(135deg,rgba(131,58,180,.22),rgba(253,29,29,.22)) !important; }
-.ig-btn .agent-icon { background: linear-gradient(135deg,#833ab4,#fd1d1d); color:#fff; border:none; }
-.api-section { margin-top: auto; padding: 14px; border-top: 1px solid var(--border); }
-.api-section label { font-size: 10px; color: var(--muted); display: block; margin-bottom: 5px; letter-spacing: 1px; text-transform: uppercase; }
-.api-input { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; color: var(--text); padding: 7px 10px; font-size: 12px; font-family: 'DM Mono', monospace; outline: none; }
-.api-input:focus { border-color: var(--border2); }
-.api-input::placeholder { color: var(--muted); }
-.api-status { display: flex; align-items: center; gap: 6px; margin-top: 6px; font-size: 11px; color: var(--muted); }
-.status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); }
-.status-dot.ok { background: var(--green); } .status-dot.err { background: var(--red); }
+Seja direto, opinionado e estratégico. Evite generalidades.`,
+  },
 
-/* ── MAIN ── */
-.main { display: flex; flex-direction: column; min-height: 100vh; }
+  ux: {
+    name: "UX Designer",
+    role: "Fluxo e estrutura",
+    icon: "◻",
+    description: "Mapeia fluxos, jornadas e estrutura a informação",
+    system: `Você é um UX designer sênior especialista em arquitetura de informação, design de interação e pesquisa com usuário.
 
-/* ── TOPBAR ── */
-.topbar { padding: 16px 28px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-shrink: 0; }
-.topbar-title { font-family: 'DM Serif Display', serif; font-size: 19px; }
-.topbar-meta { font-size: 11px; color: var(--muted); }
+Entregue sempre:
+1. **Jornada do usuário** — do ponto de entrada até o objetivo final
+2. **Arquitetura de informação** — hierarquia de conteúdo com indentação
+3. **Wireframe em texto** — estrutura de cada tela/seção principal
+4. **Pontos de fricção** — onde o usuário pode se perder e como resolver
+5. **Micro-interações recomendadas** — feedbacks visuais importantes
+6. **Acessibilidade** — considerações WCAG relevantes`,
+  },
 
-/* ── TABS ── */
-.tabs { display: flex; border-bottom: 1px solid var(--border); background: var(--surface); flex-shrink: 0; }
-.tab { padding: 11px 24px; font-size: 13px; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; transition: all .15s; background: none; border-top: none; border-left: none; border-right: none; font-family: 'Geist', sans-serif; }
-.tab:hover { color: var(--text); }
-.tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+  visual: {
+    name: "Visual Designer",
+    role: "Arte para Instagram",
+    icon: "◆",
+    description: "Cria arte visual pronta para exportar como PNG",
+    system: `Você é um visual designer especialista em social media e design gráfico digital.
 
-/* ── PIPELINE BAR ── */
-.pipeline-bar { padding: 10px 28px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 7px; background: var(--surface); overflow-x: auto; flex-shrink: 0; }
-.pipeline-step { font-size: 11px; padding: 3px 9px; border-radius: 20px; border: 1px solid var(--border); color: var(--muted); white-space: nowrap; transition: all .2s; font-family: 'DM Mono', monospace; }
-.pipeline-step.running { border-color: var(--accent); color: var(--accent); background: rgba(212,168,83,.08); animation: pulse 1.5s infinite; }
-.pipeline-step.done { border-color: var(--green); color: var(--green); background: rgba(74,222,128,.06); }
-.pipeline-step.error { border-color: var(--red); color: var(--red); }
-.pipeline-arrow { color: var(--border2); font-size: 11px; }
-@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+Sua entrega principal é SEMPRE um post visual completo em HTML+CSS, pronto para ser exportado como PNG e postado no Instagram.
 
-/* ── CONTENT AREA ── */
-.content { flex: 1; overflow-y: auto; }
-.panel { display: none; } .panel.active { display: block; }
+REGRAS OBRIGATÓRIAS:
+- Entregue o HTML dentro de \`\`\`html ... \`\`\`
+- O canvas deve ter exatamente 1080x1080px (post quadrado Instagram)
+- Use Google Fonts para tipografia sofisticada
+- O design deve ser completo, profissional e visualmente impactante
+- Inclua todos os textos, elementos visuais, cores e composição final
+- Use CSS puro, sem frameworks externos
+- O HTML deve funcionar standalone no browser
+- Crie fundos com gradientes, formas geométricas em CSS
+- Use elementos SVG inline para formas decorativas
 
-/* ── CLIENTES PANEL ── */
-.clients-panel { padding: 28px; }
-.clients-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
-.clients-header h2 { font-family: 'DM Serif Display', serif; font-size: 18px; }
-.add-client-btn { padding: 8px 18px; background: var(--accent); color: #0a0a0a; border: none; border-radius: 8px; font-size: 13px; font-weight: 500; font-family: 'Geist', sans-serif; cursor: pointer; transition: all .15s; }
-.add-client-btn:hover { background: var(--accent2); }
-.clients-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
+ESTRUTURA DO HTML:
+- body com margin:0, overflow:hidden, background:#000
+- div#canvas com width:1080px, height:1080px, position:relative, overflow:hidden
+- Todos os elementos posicionados dentro do #canvas
+- Fontes via Google Fonts no <head>
 
-/* Cliente card */
-.client-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; cursor: pointer; transition: all .15s; position: relative; }
-.client-card:hover { border-color: var(--border2); }
-.client-card.selected { border-color: var(--accent); background: rgba(212,168,83,.06); }
-.client-card .client-logo { width: 52px; height: 52px; border-radius: 10px; object-fit: cover; background: var(--surface2); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 20px; margin-bottom: 10px; overflow: hidden; }
-.client-card .client-logo img { width: 100%; height: 100%; object-fit: cover; }
-.client-card .client-name { font-weight: 500; font-size: 14px; margin-bottom: 2px; }
-.client-card .client-segment { font-size: 11px; color: var(--muted); }
-.client-card .client-actions { position: absolute; top: 10px; right: 10px; display: flex; gap: 4px; opacity: 0; transition: opacity .15s; }
-.client-card:hover .client-actions { opacity: 1; }
-.client-card-action { width: 24px; height: 24px; border-radius: 6px; border: 1px solid var(--border); background: var(--surface2); color: var(--muted); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 11px; transition: all .15s; }
-.client-card-action:hover { color: var(--text); border-color: var(--border2); }
-.client-card-action.del:hover { color: var(--red); border-color: var(--red); }
-.selected-badge { position: absolute; bottom: 10px; right: 10px; font-size: 10px; padding: 2px 7px; background: rgba(212,168,83,.15); color: var(--accent); border-radius: 20px; border: 1px solid rgba(212,168,83,.3); }
-.no-clients { text-align: center; padding: 60px 20px; color: var(--muted); }
-.no-clients-icon { font-size: 36px; margin-bottom: 12px; opacity: .3; }
+Após o HTML, entregue:
+- **Paleta usada** — hex codes
+- **Fontes usadas** — nomes
+- **Conceito visual** — 2 linhas`,
+  },
 
-/* ── MODAL ── */
-.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.7); display: none; align-items: center; justify-content: center; z-index: 100; padding: 20px; }
-.modal-overlay.open { display: flex; }
-.modal { background: var(--surface); border: 1px solid var(--border2); border-radius: 16px; width: 100%; max-width: 540px; max-height: 90vh; overflow-y: auto; }
-.modal-header { padding: 20px 24px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
-.modal-title { font-family: 'DM Serif Display', serif; font-size: 18px; }
-.modal-close { width: 28px; height: 28px; border-radius: 7px; border: 1px solid var(--border); background: var(--surface2); color: var(--muted); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: all .15s; }
-.modal-close:hover { color: var(--text); }
-.modal-body { padding: 20px 24px; }
-.form-row { margin-bottom: 16px; }
-.form-row label { display: block; font-size: 11px; color: var(--muted); margin-bottom: 6px; letter-spacing: 1px; text-transform: uppercase; }
-.form-input, .form-textarea, .form-select { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; color: var(--text); padding: 9px 12px; font-size: 14px; font-family: 'Geist', sans-serif; outline: none; transition: border-color .15s; }
-.form-input:focus, .form-textarea:focus, .form-select:focus { border-color: var(--border2); }
-.form-input::placeholder, .form-textarea::placeholder { color: #444; }
-.form-textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
-.form-select { appearance: none; cursor: pointer; }
-.form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+  copy: {
+    name: "Copywriter",
+    role: "Textos e headlines",
+    icon: "◇",
+    description: "Escreve todos os textos, CTAs e microcopy",
+    system: `Você é um copywriter especialista em marketing de conteúdo e brand voice com foco em conversão.
 
-/* Logo upload */
-.logo-upload { border: 1px dashed var(--border2); border-radius: 10px; padding: 20px; text-align: center; cursor: pointer; transition: all .15s; position: relative; }
-.logo-upload:hover { border-color: var(--accent); background: rgba(212,168,83,.04); }
-.logo-upload input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
-.logo-preview { width: 64px; height: 64px; border-radius: 10px; object-fit: cover; margin: 0 auto 8px; display: block; border: 1px solid var(--border); }
-.logo-upload-label { font-size: 13px; color: var(--muted); }
-.logo-upload-label span { color: var(--accent); }
+Entregue sempre:
+1. **Headline principal** — com 3 variações (racional, emocional, disruptiva)
+2. **Subheadline** — complementa sem repetir a headline
+3. **Textos de seção** — para cada bloco
+4. **CTAs** — primário e secundário
+5. **Microcopy** — labels, mensagens, tooltips
+6. **Tom aplicado** — 5 exemplos de como a marca fala
 
-/* Colors row */
-.colors-row { display: flex; gap: 8px; flex-wrap: wrap; }
-.color-chip { display: flex; align-items: center; gap: 6px; padding: 5px 10px; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; font-size: 12px; font-family: 'DM Mono', monospace; color: var(--muted); }
-.color-dot { width: 14px; height: 14px; border-radius: 50%; border: 1px solid rgba(255,255,255,.1); flex-shrink: 0; }
-.color-input-row { display: flex; gap: 8px; margin-top: 8px; }
-.color-input-row input[type=text] { flex: 1; }
-.add-color-btn { padding: 7px 14px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; color: var(--muted); cursor: pointer; font-size: 13px; font-family: 'Geist', sans-serif; transition: all .15s; white-space: nowrap; }
-.add-color-btn:hover { color: var(--text); border-color: var(--border2); }
+Seja específico. Entregue textos prontos para usar.`,
+  },
 
-.modal-footer { padding: 16px 24px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 10px; }
-.btn-cancel { padding: 8px 18px; background: transparent; border: 1px solid var(--border); border-radius: 8px; color: var(--muted); cursor: pointer; font-size: 13px; font-family: 'Geist', sans-serif; transition: all .15s; }
-.btn-cancel:hover { color: var(--text); border-color: var(--border2); }
-.btn-save { padding: 8px 22px; background: var(--accent); color: #0a0a0a; border: none; border-radius: 8px; font-size: 13px; font-weight: 500; font-family: 'Geist', sans-serif; cursor: pointer; transition: all .15s; }
-.btn-save:hover { background: var(--accent2); }
+  revisor: {
+    name: "Revisor",
+    role: "QA e refinamento",
+    icon: "◎",
+    description: "Revisa, critica e entrega a versão final polida",
+    system: `Você é um diretor de criação sênior com olhar crítico e construtivo.
 
-/* ── STUDIO PANEL ── */
-.studio-panel { display: flex; flex-direction: column; }
-.client-context-bar { padding: 10px 28px; background: var(--surface2); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
-.ctx-logo { width: 28px; height: 28px; border-radius: 6px; object-fit: cover; background: var(--surface); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 13px; overflow: hidden; flex-shrink: 0; }
-.ctx-logo img { width: 100%; height: 100%; object-fit: cover; }
-.ctx-name { font-size: 13px; font-weight: 500; }
-.ctx-segment { font-size: 11px; color: var(--muted); }
-.ctx-change { margin-left: auto; font-size: 11px; color: var(--accent); cursor: pointer; padding: 4px 10px; border: 1px solid rgba(212,168,83,.3); border-radius: 6px; transition: all .15s; }
-.ctx-change:hover { background: rgba(212,168,83,.08); }
-.no-client-bar { padding: 10px 28px; background: rgba(248,113,113,.06); border-bottom: 1px solid rgba(248,113,113,.15); display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--red); }
+Entregue sempre:
+1. **Pontos fortes** — o que o squad acertou
+2. **Problemas críticos** — o que PRECISA mudar
+3. **Melhorias recomendadas** — ordenadas por impacto
+4. **Inconsistências** — onde estratégia, UX, visual e copy divergem
+5. **Versão final polida** — entregáveis refinados
+6. **Checklist de entrega** — o que o cliente precisa revisar`,
+  },
 
-.prompt-area { padding: 24px 28px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
-.prompt-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
-.prompt-textarea { width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); padding: 14px 18px; font-size: 14px; font-family: 'Geist', sans-serif; line-height: 1.7; resize: vertical; min-height: 90px; outline: none; transition: border-color .15s; }
-.prompt-textarea:focus { border-color: var(--border2); }
-.prompt-textarea::placeholder { color: #444; }
-.prompt-actions { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; gap: 12px; }
-.examples-row { display: flex; gap: 6px; flex-wrap: wrap; }
-.example-chip { font-size: 12px; padding: 4px 11px; border-radius: 20px; border: 1px solid var(--border); background: transparent; color: var(--muted); cursor: pointer; transition: all .15s; font-family: 'Geist', sans-serif; }
-.example-chip:hover { border-color: var(--border2); color: var(--text); }
-.run-btn { padding: 9px 22px; background: var(--accent); color: #0a0a0a; border: none; border-radius: 8px; font-size: 14px; font-weight: 500; font-family: 'Geist', sans-serif; cursor: pointer; transition: all .15s; white-space: nowrap; flex-shrink: 0; }
-.run-btn:hover { background: var(--accent2); }
-.run-btn:active { transform: scale(.97); }
-.run-btn:disabled { background: #333; color: #666; cursor: not-allowed; }
+  instagram: {
+    name: "Post Instagram",
+    role: "Arte 1080x1080 pronta",
+    icon: "▣",
+    description: "Gera arte visual pronta para baixar e postar",
+    system: `Você é um designer gráfico especialista em Instagram e social media.
 
-/* ── OUTPUT ── */
-.output-area { flex: 1; padding: 28px; overflow-y: auto; }
-.empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 260px; text-align: center; color: var(--muted); }
-.empty-mark { font-family: 'DM Serif Display', serif; font-size: 44px; color: #1e1e1e; margin-bottom: 10px; }
-.agent-output { margin-bottom: 24px; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; animation: fadeIn .4s ease; }
-@keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
-.agent-output-header { padding: 12px 18px; background: var(--surface); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
-.output-agent-name { font-weight: 500; font-size: 14px; }
-.output-badge { font-size: 10px; padding: 3px 8px; border-radius: 20px; margin-left: auto; font-family: 'DM Mono', monospace; }
-.output-badge.done { background: rgba(74,222,128,.1); color: var(--green); border: 1px solid rgba(74,222,128,.2); }
-.output-badge.running { background: rgba(212,168,83,.1); color: var(--accent); border: 1px solid rgba(212,168,83,.2); }
-.output-badge.error { background: rgba(248,113,113,.1); color: var(--red); border: 1px solid rgba(248,113,113,.2); }
-.agent-output-body { padding: 18px; background: var(--bg); font-size: 14px; line-height: 1.8; color: #ccc; white-space: pre-wrap; word-break: break-word; }
-.agent-output-body pre { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 14px; overflow-x: auto; margin: 10px 0; font-family: 'DM Mono', monospace; font-size: 12px; line-height: 1.6; }
-.copy-btn { float: right; font-size: 11px; padding: 3px 9px; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; color: var(--muted); cursor: pointer; font-family: 'Geist', sans-serif; transition: all .15s; margin-bottom: 6px; }
-.copy-btn:hover { color: var(--text); }
-.rendered h1,.rendered h2,.rendered h3 { font-family: 'DM Serif Display', serif; color: var(--text); margin: 14px 0 6px; }
-.rendered h1{font-size:20px} .rendered h2{font-size:17px} .rendered h3{font-size:15px}
-.rendered strong { color: var(--accent); font-weight: 500; }
-.rendered code { background: var(--surface2); padding: 2px 5px; border-radius: 4px; font-family: 'DM Mono', monospace; font-size: 12px; color: #aaa; }
-.spinner { display: inline-block; width: 13px; height: 13px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .7s linear infinite; vertical-align: middle; margin-right: 5px; }
-@keyframes spin { to{transform:rotate(360deg)} }
+Sua ÚNICA entrega é um post visual 1080x1080px em HTML+CSS dentro de \`\`\`html ... \`\`\`, pronto para exportar como PNG.
 
-/* ── PREVIEW INSTAGRAM ── */
-.preview-wrap { padding: 0 18px 18px; background: var(--bg); }
-.preview-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; padding-top: 4px; }
-.preview-container { max-width: 480px; }
-.preview-frame { width: 100%; aspect-ratio: 1; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); background: #000; }
-.preview-frame iframe { width: 1080px; height: 1080px; border: none; transform-origin: top left; display: block; }
-.preview-actions { display: flex; gap: 8px; margin-top: 10px; align-items: center; }
-.png-btn { display: flex; align-items: center; gap: 7px; padding: 9px 18px; background: linear-gradient(135deg,#833ab4,#fd1d1d); color: #fff; border: none; border-radius: 8px; font-size: 13px; font-weight: 500; font-family: 'Geist', sans-serif; cursor: pointer; transition: all .15s; }
-.png-btn:hover { opacity: .9; } .png-btn:active { transform: scale(.97); } .png-btn:disabled { opacity: .5; cursor: not-allowed; }
-.size-info { font-size: 11px; color: var(--muted); }
+REGRAS:
+- Canvas exatamente 1080x1080px
+- Design profissional, impactante, moderno
+- Google Fonts obrigatório
+- Gradientes, formas, texturas em CSS puro
+- Elementos SVG inline para decoração
+- Todos os textos já incluídos no layout
+- HTML standalone que funciona no browser
+- body: margin:0, overflow:hidden
+- div#canvas: width:1080px, height:1080px, position:relative, overflow:hidden
 
-@media (max-width:768px) { .app{grid-template-columns:1fr} .sidebar{height:auto;position:static} }
-</style>
-</head>
-<body>
-<div class="app">
+ESTILOS QUE VOCÊ DOMINA:
+- Minimalista elegante (espaço negativo, tipografia grande)
+- Bold & colorido (cores vibrantes, contraste forte)
+- Luxury (dourado, preto, fontes serif)
+- Editorial (layout assimétrico, múltiplos pesos)
+- Gradiente moderno (glassmorphism, gradientes suaves)
 
-  <!-- SIDEBAR -->
-  <aside class="sidebar">
-    <div class="logo">
-      <span class="logo-mark">Design Squad</span>
-      <span class="logo-sub">AI Design Team</span>
-    </div>
-    <div class="sidebar-section">
-      <p class="sidebar-label">Modo</p>
-      <button class="agent-btn active" onclick="selectAgent('squad')" id="btn-squad">
-        <div class="agent-icon">⬡</div>
-        <div class="agent-info"><div class="agent-name">Squad completo</div><div class="agent-role">Todos os agentes</div></div>
-      </button>
-      <button class="agent-btn ig-btn" onclick="selectAgent('instagram')" id="btn-instagram">
-        <div class="agent-icon">▣</div>
-        <div class="agent-info"><div class="agent-name">Post Instagram</div><div class="agent-role">Arte PNG pronta</div></div>
-      </button>
-    </div>
-    <div class="sidebar-section">
-      <p class="sidebar-label">Agente único</p>
-      <div id="agents-list"></div>
-    </div>
-    <div class="api-section">
-      <label>Anthropic API Key</label>
-      <input type="password" class="api-input" id="api-key" placeholder="sk-ant-..." oninput="checkApiKey()"/>
-      <div class="api-status">
-        <div class="status-dot" id="status-dot"></div>
-        <span id="status-text">Cole sua chave para começar</span>
-      </div>
-    </div>
-  </aside>
-
-  <!-- MAIN -->
-  <main class="main">
-    <div class="topbar">
-      <div>
-        <div class="topbar-title" id="topbar-title">Design Squad</div>
-        <div class="topbar-meta" id="topbar-meta">Selecione um cliente e comece</div>
-      </div>
-    </div>
-
-    <!-- TABS -->
-    <div class="tabs">
-      <button class="tab active" onclick="showTab('studio')" id="tab-studio">Estúdio</button>
-      <button class="tab" onclick="showTab('clients')" id="tab-clients">Clientes <span id="clients-count" style="font-size:10px;background:var(--surface2);padding:1px 6px;border-radius:10px;margin-left:4px">0</span></button>
-    </div>
-
-    <!-- STUDIO TAB -->
-    <div class="panel active" id="panel-studio">
-      <div class="studio-panel">
-        <!-- client context bar -->
-        <div id="client-context-bar" class="no-client-bar">
-          ⚠ Nenhum cliente selecionado — vá em <strong style="margin:0 4px;cursor:pointer;text-decoration:underline" onclick="showTab('clients')">Clientes</strong> e selecione um para começar.
-        </div>
-
-        <!-- pipeline bar -->
-        <div class="pipeline-bar" id="pipeline-bar">
-          <span class="pipeline-step" id="ps-estrategista">Estrategista</span><span class="pipeline-arrow">›</span>
-          <span class="pipeline-step" id="ps-ux">UX</span><span class="pipeline-arrow">›</span>
-          <span class="pipeline-step" id="ps-visual">Visual</span><span class="pipeline-arrow">›</span>
-          <span class="pipeline-step" id="ps-copy">Copy</span><span class="pipeline-arrow">›</span>
-          <span class="pipeline-step" id="ps-revisor">Revisor</span>
-        </div>
-
-        <div class="prompt-area">
-          <p class="prompt-label" id="prompt-label">O que criar?</p>
-          <textarea class="prompt-textarea" id="prompt-input" placeholder="Descreva o que o squad deve criar para este cliente..."></textarea>
-          <div class="prompt-actions">
-            <div class="examples-row" id="examples-row">
-              <button class="example-chip" onclick="fillEx('Post de lançamento de produto, tom sofisticado')">Lançamento</button>
-              <button class="example-chip" onclick="fillEx('Post promocional de 30% de desconto')">Promoção</button>
-              <button class="example-chip" onclick="fillEx('Post institucional apresentando a empresa')">Institucional</button>
-            </div>
-            <button class="run-btn" id="run-btn" onclick="runSquad()" disabled>Gerar →</button>
-          </div>
-        </div>
-
-        <div class="output-area" id="output-area">
-          <div class="empty-state">
-            <div class="empty-mark">◆</div>
-            <p style="font-size:14px">Selecione um cliente e descreva o que criar.</p>
-            <p style="font-size:12px;margin-top:4px;opacity:.5">Os agentes vão usar as informações do cliente automaticamente.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- CLIENTS TAB -->
-    <div class="panel" id="panel-clients">
-      <div class="clients-panel">
-        <div class="clients-header">
-          <h2>Clientes</h2>
-          <button class="add-client-btn" onclick="openModal()">+ Novo cliente</button>
-        </div>
-        <div class="clients-grid" id="clients-grid">
-          <div class="no-clients">
-            <div class="no-clients-icon">◈</div>
-            <p style="font-size:14px">Nenhum cliente ainda</p>
-            <p style="font-size:12px;margin-top:4px">Clique em "Novo cliente" para começar</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </main>
-</div>
-
-<!-- MODAL CLIENTE -->
-<div class="modal-overlay" id="modal-overlay">
-  <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title" id="modal-title">Novo cliente</div>
-      <button class="modal-close" onclick="closeModal()">✕</button>
-    </div>
-    <div class="modal-body">
-      <!-- Logo -->
-      <div class="form-row">
-        <label>Logo</label>
-        <div class="logo-upload" id="logo-upload-area">
-          <input type="file" id="logo-file" accept="image/*" onchange="handleLogoUpload(event)"/>
-          <img id="logo-preview" class="logo-preview" style="display:none"/>
-          <div id="logo-placeholder">
-            <div style="font-size:24px;margin-bottom:6px;opacity:.3">⬡</div>
-            <div class="logo-upload-label">Clique ou arraste a logo<br><span>formatos: PNG, JPG, SVG</span></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="form-row-2">
-        <div class="form-row" style="margin:0">
-          <label>Nome da empresa *</label>
-          <input type="text" class="form-input" id="f-name" placeholder="Ex: Glow Beauty"/>
-        </div>
-        <div class="form-row" style="margin:0">
-          <label>Segmento</label>
-          <input type="text" class="form-input" id="f-segment" placeholder="Ex: Beleza e cosméticos"/>
-        </div>
-      </div>
-
-      <div class="form-row-2">
-        <div class="form-row" style="margin:0">
-          <label>Site</label>
-          <input type="text" class="form-input" id="f-website" placeholder="https://..."/>
-        </div>
-        <div class="form-row" style="margin:0">
-          <label>Instagram</label>
-          <input type="text" class="form-input" id="f-instagram" placeholder="@handle"/>
-        </div>
-      </div>
-
-      <div class="form-row">
-        <label>Tom de voz / personalidade da marca</label>
-        <textarea class="form-textarea" id="f-tone" placeholder="Ex: Sofisticado, feminino, inspirador. Fala diretamente com mulheres 25-40 anos que valorizam qualidade..."></textarea>
-      </div>
-
-      <div class="form-row">
-        <label>Público-alvo</label>
-        <textarea class="form-textarea" id="f-audience" placeholder="Ex: Mulheres 25-40 anos, classe B/A, interessadas em skincare e autocuidado..." style="min-height:60px"></textarea>
-      </div>
-
-      <div class="form-row">
-        <label>Cores da marca</label>
-        <div class="colors-row" id="colors-row"></div>
-        <div class="color-input-row">
-          <input type="text" class="form-input" id="color-input" placeholder="#FF5A8A" maxlength="7" oninput="formatColorInput(this)"/>
-          <button class="add-color-btn" onclick="addColor()">+ Adicionar cor</button>
-        </div>
-      </div>
-
-      <div class="form-row">
-        <label>Fontes / tipografia</label>
-        <input type="text" class="form-input" id="f-fonts" placeholder="Ex: Playfair Display para títulos, Lato para corpo"/>
-      </div>
-
-      <div class="form-row">
-        <label>Informações adicionais</label>
-        <textarea class="form-textarea" id="f-extra" placeholder="Slogan, diferenciais, produtos principais, restrições visuais..." style="min-height:60px"></textarea>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
-      <button class="btn-save" onclick="saveClient()">Salvar cliente</button>
-    </div>
-  </div>
-</div>
-
-<script>
-// ── STATE ──────────────────────────────────────────
-let clients = JSON.parse(localStorage.getItem('ds_clients') || '[]');
-let selectedClientId = localStorage.getItem('ds_selected') || null;
-let editingClientId = null;
-let currentAgent = 'squad';
-let running = false;
-let currentColors = [];
-let currentLogoBase64 = null;
-
-const PIPELINE = ['estrategista','ux','visual','copy','revisor'];
-const AGENT_META = {
-  estrategista:{name:'Estrategista',role:'Briefing e conceito',icon:'◈'},
-  ux:{name:'UX Designer',role:'Fluxo e estrutura',icon:'◻'},
-  visual:{name:'Visual Designer',role:'Arte Instagram',icon:'◆'},
-  copy:{name:'Copywriter',role:'Textos e headlines',icon:'◇'},
-  revisor:{name:'Revisor',role:'QA e refinamento',icon:'◎'},
+Escolha o estilo mais adequado ao briefing e execute com perfeição.
+Após o HTML, escreva 2 linhas sobre o conceito visual.`,
+  },
 };
-
-// ── INIT ───────────────────────────────────────────
-(function init() {
-  // Render agent buttons
-  const list = document.getElementById('agents-list');
-  Object.entries(AGENT_META).forEach(([id, a]) => {
-    const btn = document.createElement('button');
-    btn.className = 'agent-btn'; btn.id = 'btn-'+id;
-    btn.onclick = () => selectAgent(id);
-    btn.innerHTML = `<div class="agent-icon">${a.icon}</div><div class="agent-info"><div class="agent-name">${a.name}</div><div class="agent-role">${a.role}</div></div>`;
-    list.appendChild(btn);
-  });
-  renderClients();
-  updateClientContextBar();
-  updateClientsCount();
-})();
-
-// ── TABS ───────────────────────────────────────────
-function showTab(tab) {
-  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('panel-'+tab).classList.add('active');
-  document.getElementById('tab-'+tab).classList.add('active');
-}
-
-// ── CLIENTS ────────────────────────────────────────
-function saveClients() { localStorage.setItem('ds_clients', JSON.stringify(clients)); }
-
-function updateClientsCount() {
-  document.getElementById('clients-count').textContent = clients.length;
-}
-
-function renderClients() {
-  const grid = document.getElementById('clients-grid');
-  if (!clients.length) {
-    grid.innerHTML = `<div class="no-clients"><div class="no-clients-icon">◈</div><p style="font-size:14px">Nenhum cliente ainda</p><p style="font-size:12px;margin-top:4px">Clique em "Novo cliente" para começar</p></div>`;
-    return;
-  }
-  grid.innerHTML = clients.map(c => {
-    const isSelected = c.id === selectedClientId;
-    const logoHtml = c.logo
-      ? `<div class="client-logo"><img src="${c.logo}" alt=""/></div>`
-      : `<div class="client-logo" style="font-size:18px">${c.name.charAt(0)}</div>`;
-    return `
-      <div class="client-card ${isSelected?'selected':''}" onclick="selectClient('${c.id}')">
-        <div class="client-actions">
-          <button class="client-card-action" onclick="event.stopPropagation();editClient('${c.id}')">✎</button>
-          <button class="client-card-action del" onclick="event.stopPropagation();deleteClient('${c.id}')">✕</button>
-        </div>
-        ${logoHtml}
-        <div class="client-name">${c.name}</div>
-        <div class="client-segment">${c.segment||'Sem segmento'}</div>
-        ${isSelected ? '<div class="selected-badge">Ativo</div>' : ''}
-      </div>`;
-  }).join('');
-  updateClientsCount();
-}
-
-function selectClient(id) {
-  selectedClientId = id;
-  localStorage.setItem('ds_selected', id);
-  renderClients();
-  updateClientContextBar();
-  showTab('studio');
-}
-
-function updateClientContextBar() {
-  const bar = document.getElementById('client-context-bar');
-  const client = clients.find(c => c.id === selectedClientId);
-  if (!client) {
-    bar.className = 'no-client-bar';
-    bar.innerHTML = `⚠ Nenhum cliente selecionado — vá em <strong style="margin:0 4px;cursor:pointer;text-decoration:underline" onclick="showTab('clients')">Clientes</strong> e selecione um.`;
-    document.getElementById('run-btn').disabled = true;
-    return;
-  }
-  const logoHtml = client.logo
-    ? `<div class="ctx-logo"><img src="${client.logo}"/></div>`
-    : `<div class="ctx-logo">${client.name.charAt(0)}</div>`;
-  bar.className = 'client-context-bar';
-  bar.innerHTML = `
-    ${logoHtml}
-    <div>
-      <div class="ctx-name">${client.name}</div>
-      <div class="ctx-segment">${client.segment||''}</div>
-    </div>
-    <div class="ctx-change" onclick="showTab('clients')">Trocar cliente</div>`;
-  checkApiKey();
-}
-
-function deleteClient(id) {
-  if (!confirm('Remover este cliente?')) return;
-  clients = clients.filter(c => c.id !== id);
-  if (selectedClientId === id) { selectedClientId = null; localStorage.removeItem('ds_selected'); }
-  saveClients(); renderClients(); updateClientContextBar();
-}
-
-// ── MODAL ──────────────────────────────────────────
-function openModal(clientId = null) {
-  editingClientId = clientId;
-  currentColors = [];
-  currentLogoBase64 = null;
-  document.getElementById('modal-title').textContent = clientId ? 'Editar cliente' : 'Novo cliente';
-
-  // Reset fields
-  ['f-name','f-segment','f-website','f-instagram','f-tone','f-audience','f-fonts','f-extra'].forEach(id => {
-    document.getElementById(id).value = '';
-  });
-  document.getElementById('logo-preview').style.display = 'none';
-  document.getElementById('logo-placeholder').style.display = 'block';
-  document.getElementById('colors-row').innerHTML = '';
-  document.getElementById('color-input').value = '';
-
-  if (clientId) {
-    const c = clients.find(cl => cl.id === clientId);
-    if (c) {
-      document.getElementById('f-name').value = c.name || '';
-      document.getElementById('f-segment').value = c.segment || '';
-      document.getElementById('f-website').value = c.website || '';
-      document.getElementById('f-instagram').value = c.instagram || '';
-      document.getElementById('f-tone').value = c.tone || '';
-      document.getElementById('f-audience').value = c.audience || '';
-      document.getElementById('f-fonts').value = c.fonts || '';
-      document.getElementById('f-extra').value = c.extra || '';
-      if (c.logo) {
-        currentLogoBase64 = c.logo;
-        document.getElementById('logo-preview').src = c.logo;
-        document.getElementById('logo-preview').style.display = 'block';
-        document.getElementById('logo-placeholder').style.display = 'none';
-      }
-      currentColors = c.colors || [];
-      renderColorChips();
-    }
-  }
-
-  document.getElementById('modal-overlay').classList.add('open');
-}
-
-function editClient(id) { openModal(id); }
-
-function closeModal() {
-  document.getElementById('modal-overlay').classList.remove('open');
-  editingClientId = null;
-}
-
-function saveClient() {
-  const name = document.getElementById('f-name').value.trim();
-  if (!name) { alert('Nome da empresa é obrigatório'); return; }
-
-  const client = {
-    id: editingClientId || Date.now().toString(),
-    name,
-    segment: document.getElementById('f-segment').value.trim(),
-    website: document.getElementById('f-website').value.trim(),
-    instagram: document.getElementById('f-instagram').value.trim(),
-    tone: document.getElementById('f-tone').value.trim(),
-    audience: document.getElementById('f-audience').value.trim(),
-    fonts: document.getElementById('f-fonts').value.trim(),
-    extra: document.getElementById('f-extra').value.trim(),
-    colors: [...currentColors],
-    logo: currentLogoBase64,
-  };
-
-  if (editingClientId) {
-    clients = clients.map(c => c.id === editingClientId ? client : c);
-  } else {
-    clients.push(client);
-  }
-
-  saveClients(); renderClients(); closeModal(); updateClientsCount();
-}
-
-// ── LOGO UPLOAD ────────────────────────────────────
-function handleLogoUpload(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = e => {
-    currentLogoBase64 = e.target.result;
-    document.getElementById('logo-preview').src = e.target.result;
-    document.getElementById('logo-preview').style.display = 'block';
-    document.getElementById('logo-placeholder').style.display = 'none';
-  };
-  reader.readAsDataURL(file);
-}
-
-// ── COLORS ─────────────────────────────────────────
-function formatColorInput(input) {
-  let v = input.value.replace(/[^0-9a-fA-F#]/g,'');
-  if (v && !v.startsWith('#')) v = '#' + v;
-  input.value = v;
-}
-
-function addColor() {
-  const val = document.getElementById('color-input').value.trim();
-  if (!val.match(/^#[0-9a-fA-F]{3,6}$/)) { alert('Cor inválida. Use formato #RRGGBB'); return; }
-  if (currentColors.includes(val)) return;
-  currentColors.push(val);
-  renderColorChips();
-  document.getElementById('color-input').value = '';
-}
-
-function renderColorChips() {
-  document.getElementById('colors-row').innerHTML = currentColors.map((c,i) =>
-    `<div class="color-chip"><div class="color-dot" style="background:${c}"></div>${c}<span style="cursor:pointer;margin-left:4px;opacity:.5" onclick="removeColor(${i})">✕</span></div>`
-  ).join('');
-}
-
-function removeColor(i) { currentColors.splice(i,1); renderColorChips(); }
-
-// ── AGENT SELECTION ────────────────────────────────
-function selectAgent(id) {
-  currentAgent = id;
-  document.querySelectorAll('.agent-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('btn-'+id).classList.add('active');
-  const pb = document.getElementById('pipeline-bar');
-  if (id === 'squad') {
-    document.getElementById('topbar-title').textContent = 'Squad completo';
-    document.getElementById('topbar-meta').textContent = 'Estrategista → UX → Visual → Copy → Revisor';
-    pb.style.display = 'flex';
-  } else if (id === 'instagram') {
-    document.getElementById('topbar-title').textContent = 'Post Instagram';
-    document.getElementById('topbar-meta').textContent = 'Arte 1080×1080px pronta para postar';
-    pb.style.display = 'none';
-  } else {
-    const a = AGENT_META[id];
-    document.getElementById('topbar-title').textContent = a.name;
-    document.getElementById('topbar-meta').textContent = a.role;
-    pb.style.display = 'none';
-  }
-}
-
-function checkApiKey() {
-  const key = document.getElementById('api-key').value.trim();
-  const dot = document.getElementById('status-dot');
-  const txt = document.getElementById('status-text');
-  const btn = document.getElementById('run-btn');
-  const hasClient = !!clients.find(c => c.id === selectedClientId);
-  if (key.startsWith('sk-ant-') && key.length > 20) {
-    dot.className = 'status-dot ok'; txt.textContent = 'Chave válida';
-    btn.disabled = !hasClient;
-  } else if (key.length > 0) {
-    dot.className = 'status-dot err'; txt.textContent = 'Formato inválido'; btn.disabled = true;
-  } else {
-    dot.className = 'status-dot'; txt.textContent = 'Cole sua chave'; btn.disabled = true;
-  }
-}
-
-function fillEx(text) { document.getElementById('prompt-input').value = text; }
-
-// ── BUILD CLIENT CONTEXT STRING ────────────────────
-function buildClientContext(client) {
-  let ctx = `=== PERFIL DO CLIENTE ===\n`;
-  ctx += `Empresa: ${client.name}\n`;
-  if (client.segment) ctx += `Segmento: ${client.segment}\n`;
-  if (client.website) ctx += `Site: ${client.website}\n`;
-  if (client.instagram) ctx += `Instagram: ${client.instagram}\n`;
-  if (client.audience) ctx += `Público-alvo: ${client.audience}\n`;
-  if (client.tone) ctx += `Tom de voz / personalidade: ${client.tone}\n`;
-  if (client.colors?.length) ctx += `Cores da marca: ${client.colors.join(', ')}\n`;
-  if (client.fonts) ctx += `Tipografia: ${client.fonts}\n`;
-  if (client.extra) ctx += `Informações adicionais: ${client.extra}\n`;
-  if (client.logo) ctx += `[O cliente possui logo — use as cores e estilo compatíveis]\n`;
-  ctx += `========================\n`;
-  return ctx;
-}
-
-// ── RUN ────────────────────────────────────────────
-async function runSquad() {
-  if (running) return;
-  const prompt = document.getElementById('prompt-input').value.trim();
-  const apiKey = document.getElementById('api-key').value.trim();
-  const client = clients.find(c => c.id === selectedClientId);
-  if (!prompt || !apiKey || !client) return;
-
-  running = true;
-  document.getElementById('run-btn').disabled = true;
-  document.getElementById('output-area').innerHTML = '';
-  PIPELINE.forEach(id => { const el = document.getElementById('ps-'+id); if(el) el.className='pipeline-step'; });
-
-  const clientCtx = buildClientContext(client);
-  const fullPrompt = `${clientCtx}\n\nTarefa: ${prompt}`;
-
-  if (currentAgent === 'instagram') {
-    await runSingleAgent('instagram', fullPrompt, apiKey);
-  } else if (currentAgent === 'squad') {
-    await runFullSquad(fullPrompt, apiKey);
-  } else {
-    await runSingleAgent(currentAgent, fullPrompt, apiKey);
-  }
-
-  running = false;
-  document.getElementById('run-btn').disabled = false;
-}
-
-// ── RENDER HELPERS ─────────────────────────────────
-function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-function extractHtml(text) {
-  const m = text.match(/```html\s*([\s\S]*?)```/);
-  return m ? m[1].trim() : null;
-}
-
-function renderMarkdown(text) {
-  return text
-    .replace(/```html([\s\S]*?)```/g, (_,c) => `<div style="position:relative"><button class="copy-btn" onclick="copyCode(this)">Copiar</button><pre>${escHtml(c.trim())}</pre></div>`)
-    .replace(/```([\s\S]*?)```/g, (_,c) => `<pre>${escHtml(c.trim())}</pre>`)
-    .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
-    .replace(/^### (.*)/gm,'<h3>$1</h3>').replace(/^## (.*)/gm,'<h2>$1</h2>').replace(/^# (.*)/gm,'<h1>$1</h1>')
-    .replace(/\n/g,'<br>');
-}
-
-function copyCode(btn) {
-  navigator.clipboard.writeText(btn.nextElementSibling.textContent).then(() => {
-    btn.textContent='Copiado!'; setTimeout(()=>btn.textContent='Copiar',2000);
-  });
-}
-
-function createOutputCard(agentId, status) {
-  const a = AGENT_META[agentId] || {name:agentId,icon:'◆'};
-  const div = document.createElement('div');
-  div.className = 'agent-output'; div.id = 'out-'+agentId;
-  div.innerHTML = `
-    <div class="agent-output-header">
-      <span>${a.icon}</span>
-      <span class="output-agent-name">${a.name}</span>
-      <span class="output-badge ${status}" id="badge-${agentId}">${status==='running'?'<span class="spinner"></span> Trabalhando...':status}</span>
-    </div>
-    <div class="agent-output-body rendered" id="body-${agentId}"></div>`;
-  return div;
-}
-
-function renderInstagramPreview(area, htmlCode) {
-  const wrap = document.createElement('div');
-  wrap.className = 'preview-wrap';
-  const label = document.createElement('p');
-  label.className = 'preview-label'; label.textContent = 'Preview — 1080×1080px';
-  wrap.appendChild(label);
-  const container = document.createElement('div');
-  container.className = 'preview-container';
-  const frame = document.createElement('div');
-  frame.className = 'preview-frame';
-  const iframe = document.createElement('iframe');
-  iframe.srcdoc = htmlCode;
-  function scaleIframe() {
-    const w = frame.offsetWidth || 480;
-    const s = w / 1080;
-    iframe.style.transform = `scale(${s})`;
-    frame.style.height = (1080*s)+'px';
-  }
-  iframe.onload = scaleIframe;
-  frame.appendChild(iframe);
-  container.appendChild(frame);
-  setTimeout(scaleIframe, 150);
-  window.addEventListener('resize', scaleIframe);
-  const actions = document.createElement('div');
-  actions.className = 'preview-actions';
-  const pngBtn = document.createElement('button');
-  pngBtn.className = 'png-btn';
-  pngBtn.innerHTML = '↓ Baixar PNG para Instagram';
-  pngBtn.onclick = () => downloadPng(htmlCode, pngBtn);
-  actions.appendChild(pngBtn);
-  const si = document.createElement('span');
-  si.className = 'size-info'; si.textContent = '1080 × 1080 px';
-  actions.appendChild(si);
-  container.appendChild(actions);
-  wrap.appendChild(container);
-  area.appendChild(wrap);
-}
-
-async function downloadPng(htmlCode, btn) {
-  btn.disabled = true; btn.textContent = 'Gerando PNG...';
-  try {
-    const hf = document.createElement('iframe');
-    hf.style.cssText = 'position:fixed;left:-9999px;top:-9999px;width:1080px;height:1080px;border:none;';
-    hf.srcdoc = htmlCode;
-    document.body.appendChild(hf);
-    await new Promise(r => { hf.onload=r; setTimeout(r,2000); });
-    await new Promise(r => setTimeout(r,500));
-    const canvas = await html2canvas(hf.contentDocument.body, {width:1080,height:1080,scale:1,useCORS:true,allowTaint:true,backgroundColor:null});
-    document.body.removeChild(hf);
-    const link = document.createElement('a');
-    link.download = 'post-instagram.png';
-    link.href = canvas.toDataURL('image/png');
-    link.click();
-    btn.textContent = '✓ PNG baixado!';
-    setTimeout(() => { btn.textContent='↓ Baixar PNG para Instagram'; btn.disabled=false; }, 3000);
-  } catch(e) {
-    btn.textContent='Erro — tente novamente'; btn.disabled=false;
-  }
-}
-
-// ── API CALLS ──────────────────────────────────────
-async function runSingleAgent(agentId, prompt, apiKey) {
-  const area = document.getElementById('output-area');
-  const card = createOutputCard(agentId, 'running');
-  area.appendChild(card);
-  try {
-    const res = await fetch(`/api/run/${agentId}`, {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({prompt, apiKey}),
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error);
-    document.getElementById('body-'+agentId).innerHTML = renderMarkdown(data.result);
-    if (agentId==='instagram'||agentId==='visual') {
-      const html = extractHtml(data.result);
-      if (html) renderInstagramPreview(area, html);
-    }
-    document.getElementById('badge-'+agentId).className = 'output-badge done';
-    document.getElementById('badge-'+agentId).textContent = 'Concluído';
-  } catch(e) {
-    document.getElementById('body-'+agentId).textContent = 'Erro: '+e.message;
-    document.getElementById('badge-'+agentId).className = 'output-badge error';
-    document.getElementById('badge-'+agentId).textContent = 'Erro';
-  }
-}
-
-async function runFullSquad(prompt, apiKey) {
-  const area = document.getElementById('output-area');
-  const res = await fetch('/api/run/squad/full', {
-    method:'POST', headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({prompt, apiKey}),
-  });
-  const reader = res.body.getReader();
-  const decoder = new TextDecoder();
-  let buf = '';
-  while(true) {
-    const {done,value} = await reader.read();
-    if(done) break;
-    buf += decoder.decode(value,{stream:true});
-    const lines = buf.split('\n'); buf = lines.pop();
-    for(const line of lines) {
-      if(!line.startsWith('data: ')) continue;
-      try { handleEvent(JSON.parse(line.slice(6)), area); } catch{}
-    }
-  }
-}
-
-function handleEvent(ev, area) {
-  if(ev.type==='agent_start') {
-    const ps = document.getElementById('ps-'+ev.agentId);
-    if(ps) ps.className='pipeline-step running';
-    area.appendChild(createOutputCard(ev.agentId,'running'));
-  }
-  if(ev.type==='agent_done') {
-    const ps = document.getElementById('ps-'+ev.agentId);
-    if(ps) ps.className='pipeline-step done';
-    const body = document.getElementById('body-'+ev.agentId);
-    const badge = document.getElementById('badge-'+ev.agentId);
-    if(body) body.innerHTML = renderMarkdown(ev.result);
-    if(badge) { badge.className='output-badge done'; badge.textContent='Concluído'; }
-    if(ev.agentId==='visual') { const html=extractHtml(ev.result); if(html) renderInstagramPreview(area,html); }
-  }
-  if(ev.type==='agent_error') {
-    const ps = document.getElementById('ps-'+ev.agentId);
-    if(ps) ps.className='pipeline-step error';
-    const body = document.getElementById('body-'+ev.agentId);
-    const badge = document.getElementById('badge-'+ev.agentId);
-    if(body) body.textContent='Erro: '+ev.error;
-    if(badge) { badge.className='output-badge error'; badge.textContent='Erro'; }
-  }
-}
-
-// close modal clicking outside
-document.getElementById('modal-overlay').addEventListener('click', e => {
-  if(e.target===document.getElementById('modal-overlay')) closeModal();
-});
-</script>
-</body>
-</html>
